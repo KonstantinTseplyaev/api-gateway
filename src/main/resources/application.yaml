@@ -1,0 +1,38 @@
+server:
+  port: 8090
+
+jwt:
+  secret: jfp3943jfkd7233jcgir943jpw93hd1ck84cocpewofk23ofpslkjehpoir34jokgfslnl
+
+spring:
+  main:
+    web-application-type: reactive
+  output:
+    ansi:
+      enabled: always
+  cloud:
+    gateway:
+      routes:
+        - id: auth-route
+          uri: ${AUTH_ROUTE_URI:http://localhost:8091}
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /auth/$\{segment}
+            - AuthenticationFilter
+
+        - id: food-route
+          uri: ${FOOD_ROUTE_URI:http://localhost:8092}
+          predicates:
+            - Path=/food/**
+          filters:
+            - RewritePath=/food/(?<segment>.*), /food/$\{segment}
+            - AuthenticationFilter
+
+        - id: order-route
+          uri: ${ORDER_ROUTE_URI:http://localhost:8093}
+          predicates:
+            - Path=/order/**
+          filters:
+            - RewritePath=/order/(?<segment>.*), /order/$\{segment}
+            - AuthenticationFilter
