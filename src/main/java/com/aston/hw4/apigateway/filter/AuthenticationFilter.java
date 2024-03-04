@@ -1,5 +1,6 @@
 package com.aston.hw4.apigateway.filter;
 
+import com.aston.hw4.apigateway.exception.NotValidTokenException;
 import com.aston.hw4.apigateway.util.JwtExtractor;
 import com.aston.hw4.apigateway.util.RouteValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 HttpHeaders headers = exchange.getRequest().getHeaders();
 
                 if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new RuntimeException("missing authorization header");
+                    throw new NotValidTokenException("missing authorization header");
                 }
 
                 String authToken = Objects.requireNonNull(headers.get(HttpHeaders.AUTHORIZATION)).get(0);
@@ -44,11 +45,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                                     Boolean.class));
 
                     if (!isValidToken) {
-                        throw new RuntimeException("token is not valid!");
+                        throw new NotValidTokenException("token is not valid!");
                     } else {
                         String userId = String.valueOf(jwtExtractor.extractUserId(authToken));
+                        String userRole = jwtExtractor.extractUserRole(authToken);
                         HttpHeaders writableHeaders = HttpHeaders.writableHttpHeaders(headers);
                         writableHeaders.add("userId", userId);
+                        writableHeaders.add("userRole", userRole);
                     }
                 }
             }

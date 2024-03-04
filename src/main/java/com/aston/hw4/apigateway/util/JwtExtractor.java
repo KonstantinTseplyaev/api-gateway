@@ -15,6 +15,11 @@ public class JwtExtractor {
         return (Integer) claims.get("id");
     }
 
+    public String extractUserRole(String jwtToken) {
+        Claims claims = extractAllClaims(jwtToken);
+        return (String) claims.get("role");
+    }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
