@@ -1,10 +1,17 @@
 server:
   port: 8090
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 jwt:
   secret: jfp3943jfkd7233jcgir943jpw93hd1ck84cocpewofk23ofpslkjehpoir34jokgfslnl
 
 spring:
+  application:
+    name: api-gateway
   main:
     web-application-type: reactive
   output:
